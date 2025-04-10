@@ -50,7 +50,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
 
     @Override
     public @NotNull String getVersion() {
-        return "1.2.2";
+        return "1.2.3";
     }
 
     @Override
