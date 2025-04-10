@@ -10,7 +10,6 @@ repositories {
 
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/releases/")
-    maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://jitpack.io")
 }
 

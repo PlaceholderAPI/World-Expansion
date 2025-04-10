@@ -6,6 +6,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.*;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -71,7 +72,13 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
                 }
 
                 Location loc = player.getLocation();
-                return player.getWorld().getBiome(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).name().toLowerCase();
+
+                final Biome biome = player.getWorld().getBiome(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+                if (VersionHelper.BIOMES_ARE_KEYED) {
+                    return biome.getKey().getKey().toLowerCase();
+                }
+
+                return biome.name().toLowerCase();
             case "nearbyentites":
                 if (player == null) {
                     return "";
@@ -109,7 +116,16 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
                 return timeFormat24(world.getTime());
             case "timein12":
                 return timeFormat(world.getTime(), true);
+            case "fulltime":
+                if (args.length < 3) {
+                    return String.valueOf(world.getFullTime());
+                }
 
+                if (!"strict".equals(args[1]) || !VersionHelper.HAS_WORLD_GAMETIME_METHOD) {
+                    return null;
+                }
+
+                return String.valueOf(world.getGameTime());
             case "canpvp":
                 return String.valueOf(world.getPVP());
             case "thunder":
@@ -120,6 +136,12 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
                 return String.valueOf(world.getAllowMonsters());
             case "difficulty":
                 return world.getDifficulty().name().toLowerCase();
+            case "entities":
+                if (args.length < 3 || !"living".equals(args[1])) {
+                    return String.valueOf(world.getEntities().size());
+                }
+
+                return String.valueOf(world.getLivingEntities().size());
             case "players":
                 if (args.length == 2) {
                     return String.valueOf(world.getPlayers().size());
