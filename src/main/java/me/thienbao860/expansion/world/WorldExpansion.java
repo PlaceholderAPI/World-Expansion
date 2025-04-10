@@ -66,9 +66,17 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
             case "total":
                 return String.valueOf(Bukkit.getWorlds().size());
             case "biome":
+                if (player == null) {
+                    return "";
+                }
+
                 Location loc = player.getLocation();
                 return player.getWorld().getBiome(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()).name().toLowerCase();
             case "nearbyentites":
+                if (player == null) {
+                    return "";
+                }
+
                 if (args.length != 2) {
                     return null;
                 }
