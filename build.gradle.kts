@@ -3,26 +3,27 @@ plugins {
 }
 
 group = "me.thienbao860"
-version = "1.2.3"
+version = "1.2.4"
 
 repositories {
     mavenCentral()
 
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.extendedclip.com/releases/")
     maven("https://jitpack.io")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:+")
+    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 }
 
 tasks {
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
+        disableAutoTargetJvm()
         targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
 
         withJavadocJar()
         withSourcesJar()
