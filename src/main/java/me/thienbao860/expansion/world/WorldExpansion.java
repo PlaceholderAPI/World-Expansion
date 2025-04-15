@@ -1,5 +1,7 @@
 package me.thienbao860.expansion.world;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.primitives.Ints;
 import me.clip.placeholderapi.expansion.Cacheable;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -18,12 +20,20 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WorldExpansion extends PlaceholderExpansion implements Listener, Cacheable {
     // Define a regular expression pattern to match the strings
     private final static Pattern PATTERN = Pattern.compile("(\\b\\w+\\b)|(\\b\\w+\\b)(\\B_+?\\B)(?<=\\*)\\w+(?=\\*(?:_|$))");
+
+    private final Cache<String, Integer> cache = CacheBuilder.newBuilder()
+            .expireAfterWrite(1, TimeUnit.MINUTES)
+            .build();
 
     private final Map<String, WorldData> worldData;
 
@@ -50,7 +60,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
 
     @Override
     public @NotNull String getVersion() {
-        return "1.2.3";
+        return "1.2.4";
     }
 
     @Override
@@ -136,12 +146,24 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
                 return String.valueOf(world.getAllowMonsters());
             case "difficulty":
                 return world.getDifficulty().name().toLowerCase();
-            case "entities":
-                if (args.length < 3 || !"living".equals(args[1])) {
-                    return String.valueOf(world.getEntities().size());
+
+            case "total":
+                if (args.length < 3) {
+                    return null;
                 }
 
-                return String.valueOf(world.getLivingEntities().size());
+                switch (args[1]) {
+                    case "entities":
+                        return getFromCache("totalEntities", () -> world.getEntities().size());
+                    case "living":
+                        if (args.length < 4 || !args[2].equals("living")) {
+                            return null;
+                        }
+                        return getFromCache("totalLivingEntities", () -> world.getLivingEntities().size());
+                    case "chunks":
+                        return getFromCache("totalChunks", () -> world.getLoadedChunks().length);
+                }
+
             case "players":
                 if (args.length == 2) {
                     return String.valueOf(world.getPlayers().size());
@@ -347,8 +369,25 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
         return list.toArray(new String[0]);
     }
 
+    /**
+     * Get a value from the {@link #cache}. Imported from Server-Expansion
+     *
+     * @param key      key
+     * @param callable cache method
+     * @return value if found otherwise empty
+     */
+    private @NotNull String getFromCache(@NotNull final String key, @NotNull final Callable<Integer> callable) {
+        try {
+            return String.valueOf(cache.get(key, callable));
+        } catch (ExecutionException e) {
+            getPlaceholderAPI().getLogger().log(Level.SEVERE, "Could not get key \"" + key + "\" from cache", e);
+            return "";
+        }
+    }
+
     @Override
     public void clear() {
+        this.cache.invalidateAll();
         this.worldData.clear();
         this.econ = null;
         this.perms = null;
