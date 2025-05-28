@@ -161,6 +161,11 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
                     return null;
                 }
                 return String.valueOf(playerExist(world, args[1]));
+            case "gamerule":
+                if (args.length < 3) {
+                    return null;
+                }
+                return String.valueOf(world.getGameRuleValue(args[1]));
             case "isgamerule":
                 if (args.length < 3) {
                     return null;
