@@ -154,14 +154,14 @@ public class WorldExpansion extends PlaceholderExpansion implements Listener, Ca
 
                 switch (args[1]) {
                     case "entities":
-                        return getFromCache("totalEntities", () -> world.getEntities().size());
+                        return getFromCache("totalEntities" + world.getName(), () -> world.getEntities().size());
                     case "living":
                         if (args.length < 4 || !args[2].equals("living")) {
                             return null;
                         }
-                        return getFromCache("totalLivingEntities", () -> world.getLivingEntities().size());
+                        return getFromCache("totalLivingEntities" + world.getName(), () -> world.getLivingEntities().size());
                     case "chunks":
-                        return getFromCache("totalChunks", () -> world.getLoadedChunks().length);
+                        return getFromCache("totalChunks" + world.getName(), () -> world.getLoadedChunks().length);
                 }
 
             case "players":
