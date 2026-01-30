@@ -2,21 +2,19 @@ plugins {
     java
 }
 
-group = "me.thienbao860"
-version = "1.2.3"
+group = "at.helpch"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
 
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://repo.extendedclip.com/releases/")
-    maven("https://jitpack.io")
+    maven("https://repo.codemc.io/repository/hytale/")
+    maven("https://repo.helpch.at/releases")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:+")
-    compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+    compileOnly("com.hypixel.hytale:Server:2026.01.17-4b0f30090")
+    compileOnly("at.helpch:placeholderapi-hytale:1.0.2")
 }
 
 tasks {
