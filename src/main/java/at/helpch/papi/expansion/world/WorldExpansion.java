@@ -126,24 +126,30 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 //            case "sealevel":
 //                return String.valueOf(world.getWorldConfig().);
 
-            case "time":
-                return TIME_24.format(world.getWorldConfig().getGameTime());
-            case "timein12":
-                return TIME_12.format(world.getWorldConfig().getGameTime());
+            case "time": {
+                java.time.Instant instant = world.getWorldConfig().getGameTime();
+                java.time.LocalTime time = instant.atZone(java.time.ZoneId.systemDefault()).toLocalTime();
+                return TIME_24.format(time);
+            }
+            case "timein12": {
+                java.time.Instant instant = world.getWorldConfig().getGameTime();
+                java.time.LocalTime time = instant.atZone(java.time.ZoneId.systemDefault()).toLocalTime();
+                return TIME_12.format(time);
+            }
             case "fulltime":
                 return String.valueOf(world.getWorldConfig().getGameTime());
             case "canpvp":
-                return PlaceholderAPI.booleanValue(world.getWorldConfig().isPvpEnabled());
+                return bool(world.getWorldConfig().isPvpEnabled());
 //            case "thunder":
 //                return world.getWorldConfig().
             case "spawnnpc":
-                return PlaceholderAPI.booleanValue(world.getWorldConfig().isSpawningNPC());
+                return bool(world.getWorldConfig().isSpawningNPC());
             case "npcfrozen":
-                return PlaceholderAPI.booleanValue(world.getWorldConfig().isAllNPCFrozen());
+                return bool(world.getWorldConfig().isAllNPCFrozen());
             case "falldamage":
-                return PlaceholderAPI.booleanValue(world.getWorldConfig().isFallDamageEnabled());
+                return bool(world.getWorldConfig().isFallDamageEnabled());
             case "objectivemarkers":
-                return PlaceholderAPI.booleanValue(world.getWorldConfig().isObjectiveMarkersEnabled());
+                return bool(world.getWorldConfig().isObjectiveMarkersEnabled());
             case "entities":
 //                if (args.length < 3 || !"living".equals(args[1])) {
 //                    return String.valueOf(world.getEntityStore().getStore().getEntityCount());
@@ -172,16 +178,15 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 //                }
 //                return String.valueOf(world.isGameRule(args[1].toUpperCase()));
             case "recentjoin":
-                if (player == null || !worldData.containsKey(world.getName())) {
+                if (player == null || !worldData.containsKey(world.getName())|| worldData.get(world.getName()).getRecentJoin() == null) {
                     return "";
                 }
                 return worldData.get(world.getName()).getRecentJoin().getUsername();
             case "recentquit":
-                if (player == null || !worldData.containsKey(world.getName())) {
+                if (player == null || !worldData.containsKey(world.getName()) || worldData.get(world.getName()).getRecentQuit() == null) {
                     return "";
                 }
                 return worldData.get(world.getName()).getRecentQuit().getUsername();
-
         }
         return null;
     }
@@ -303,4 +308,8 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
     public void clear() {
         this.worldData.clear();
     }
+
+    public String bool(boolean b) {
+        return b ? PlaceholderAPIPlugin.instance().configManager().config().booleanValue().trueValue() : PlaceholderAPIPlugin.instance().configManager().config().booleanValue().falseValue();
+  }
 }
