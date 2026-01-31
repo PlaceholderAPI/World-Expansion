@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.AddPlayerToWorldEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
+import com.hypixel.hytale.server.core.modules.time.WorldTimeResource;
 import com.hypixel.hytale.server.core.permissions.PermissionsModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -55,7 +56,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 
     @Override
     public String getVersion() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
@@ -76,6 +77,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 
         final Store<EntityStore> store = ref.getStore();
         final Player player = (Player) store.getComponent(ref, Player.getComponentType());
+        final WorldTimeResource timeResource = store.getResource(WorldTimeResource.getResourceType());
 
         //===== All worlds =====
         switch (args[0].toLowerCase()) {
@@ -85,8 +87,28 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
                 if (player == null) {
                     return "";
                 }
-
                 return player.getWorldMapTracker().getCurrentBiomeName();
+
+            case "time":
+                return TIME_24.format(timeResource.getGameDateTime().toLocalTime());
+            case "timein12":
+                return TIME_12.format(timeResource.getGameDateTime().toLocalTime());
+            case "fulltime":
+                return timeResource.getGameDateTime().toLocalTime().toString();
+            case "dayprogress":
+                return String.valueOf(timeResource.getDayProgress());
+            case "moonphase":
+                return String.valueOf(timeResource.getMoonPhase());
+            case "sunlightfactor":
+                return String.valueOf(timeResource.getSunlightFactor());
+            case "date":
+                return timeResource.getGameDateTime().toLocalDate().toString();
+            case "sunddirection_x":
+                return String.valueOf(timeResource.getSunDirection().x);
+            case "sunddirection_y":
+                return String.valueOf(timeResource.getSunDirection().y);
+            case "sunddirection_z":
+                return String.valueOf(timeResource.getSunDirection().z);
 //            case "nearbyentites":
 //
 ////                player.getWorld().getE
@@ -126,18 +148,19 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 //            case "sealevel":
 //                return String.valueOf(world.getWorldConfig().);
 
-            case "time": {
-                java.time.Instant instant = world.getWorldConfig().getGameTime();
-                java.time.LocalTime time = instant.atZone(java.time.ZoneId.systemDefault()).toLocalTime();
-                return TIME_24.format(time);
-            }
-            case "timein12": {
-                java.time.Instant instant = world.getWorldConfig().getGameTime();
-                java.time.LocalTime time = instant.atZone(java.time.ZoneId.systemDefault()).toLocalTime();
-                return TIME_12.format(time);
-            }
-            case "fulltime":
-                return String.valueOf(world.getWorldConfig().getGameTime());
+            // These are just getting the 'set time' value in the config, not the actual current time in the world
+            // case "time": {
+            //     java.time.Instant instant = world.getWorldConfig().getGameTime();
+            //     java.time.LocalTime time = instant.atZone(java.time.ZoneId.systemDefault()).toLocalTime();
+            //     return TIME_24.format(time);
+            // }
+            // case "timein12": {
+            //     java.time.Instant instant = world.getWorldConfig().getGameTime();
+            //     java.time.LocalTime time = instant.atZone(java.time.ZoneId.systemDefault()).toLocalTime();
+            //     return TIME_12.format(time);
+            // }
+            // case "fulltime":
+            //     return String.valueOf(world.getWorldConfig().getGameTime());
             case "canpvp":
                 return bool(world.getWorldConfig().isPvpEnabled());
 //            case "thunder":
