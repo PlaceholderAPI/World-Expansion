@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "at.helpch"
-version = "1.01"
+version = "1.0.2"
 
 repositories {
     mavenCentral()

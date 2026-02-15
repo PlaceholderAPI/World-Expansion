@@ -56,7 +56,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 
     @Override
     public String getVersion() {
-        return "1.0.1";
+        return "1.0.2";
     }
 
     @Override
@@ -141,6 +141,9 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
         switch (args[0]) {
             case "name":
                 return world.getName();
+            case "displayname":
+                String displayName = world.getWorldConfig().getDisplayName();
+                return displayName != null ? displayName : world.getName();
             case "uuid":
                 return String.valueOf(world.getWorldConfig().getUuid());
             case "seed":
