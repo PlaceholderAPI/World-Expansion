@@ -3,18 +3,18 @@ plugins {
 }
 
 group = "at.helpch"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     mavenCentral()
 
-    maven("https://repo.codemc.io/repository/hytale/")
+    maven("https://maven.hytale.com/release/")
     maven("https://repo.helpch.at/releases")
 }
 
 dependencies {
-    compileOnly("com.hypixel.hytale:Server:2026.01.17-4b0f30090")
-    compileOnly("at.helpch:placeholderapi-hytale:1.0.2")
+    compileOnly("com.hypixel.hytale:Server:0.5.2")
+    compileOnly("at.helpch:placeholderapi-hytale:1.0.8")
 }
 
 tasks {

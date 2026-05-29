@@ -56,7 +56,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
 
     @Override
     public String getVersion() {
-        return "1.0.2";
+        return "1.0.3";
     }
 
     @Override
@@ -267,7 +267,7 @@ public class WorldExpansion extends PlaceholderExpansion implements Cacheable {
         int i = 0;
         perm.replace("_", "");
         for (Player player : world.getPlayers()) {
-            if (PERMISSIONS.getGroupsForUser(player.getUuid()).contains("OP") || player.hasPermission(perm)) {
+            if (PERMISSIONS.getGroupsForUser(player.getUuid()).contains("OP") || player.getPlayerRef().hasPermission(perm)) {
                 i++;
             }
         }
